@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 library 'shared-lib-int@main'
 
-def start_jenkinsfile(Map telegramToken,appName,dockerhub){
+def call(Map telegramToken,appName,dockerhub){
 
     pipeline {
 
