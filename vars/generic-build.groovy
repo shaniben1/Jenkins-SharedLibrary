@@ -1,6 +1,7 @@
+#!/usr/bin/env groovy
 library 'shared-lib-int@main'
 
-def start_jenkinsfile(Map snykToken,telegramToken,appName,dockerhub){
+def start_jenkinsfile(Map telegramToken,appName,dockerhub){
 
     pipeline {
 
@@ -55,9 +56,9 @@ def start_jenkinsfile(Map snykToken,telegramToken,appName,dockerhub){
             }//close stage Test
 
 
-            stage('Build Bot app') {
-                 steps {
-                      sh "docker build -t shaniben/shani-repo:poly-bot-${env.BUILD_NUMBER} . "
+            stage('Build Bot app') {                            
+                 steps {                                        //change
+                      sh "docker build -t shaniben/shani-repo:${appName}-${env.BUILD_NUMBER} . "
                        }
                 }
 
@@ -68,11 +69,12 @@ def start_jenkinsfile(Map snykToken,telegramToken,appName,dockerhub){
                       }
                 }
 
-            stage('push image to rep') {
+            stage('push image to rep') {                              //change
                 steps {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'pass', usernameVariable: 'user')]){
                         sh "docker login --username $user --password $pass"
-                        sh "docker push shaniben/shani-repo:poly-bot-${env.BUILD_NUMBER}"
+                                                                //change
+                        sh "docker push shaniben/shani-repo:${appName}-${env.BUILD_NUMBER}"
                         }//close Credentials
                       }//close steps
             }//close stage push
@@ -80,8 +82,8 @@ def start_jenkinsfile(Map snykToken,telegramToken,appName,dockerhub){
 
     }//close stages
           post{
-                always{
-                    sh "docker rmi shaniben/shani-repo:poly-bot-${env.BUILD_NUMBER}"
+                always{                                    //change
+                    sh "docker rmi shaniben/shani-repo:${appName}-${env.BUILD_NUMBER}"
                       }
               }
 
