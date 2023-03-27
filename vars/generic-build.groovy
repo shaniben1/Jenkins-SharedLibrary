@@ -1,4 +1,4 @@
-//library 'shared-lib-int@main'
+library 'shared-lib-int@main'
 
 
 pipeline {
@@ -42,11 +42,11 @@ pipeline {
 
                    stage('pylint') {
                          steps {
-                           //   script {
-                           //         log.info 'Starting'
-                           //          log.warning 'Nothing to do!'
+                              script {
+                                    log.info 'Starting'
+                                     log.warning 'Nothing to do!'
                                      sh "python3 -m pylint *.py || true"
-                           //          }
+                                     }
 
                               }
                    }//close stage pylint
