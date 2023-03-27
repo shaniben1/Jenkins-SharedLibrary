@@ -1,5 +1,6 @@
 library 'shared-lib-int@main'
 
+def start_jenkinsfile(Map param)
 
 pipeline {
 
