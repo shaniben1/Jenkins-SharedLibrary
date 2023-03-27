@@ -1,7 +1,7 @@
 #!/usr/bin/env groovy
 library 'shared-lib-int@main'
 
-def call(Map telegramToken,appName,dockerhub){
+def call(String telegramToken,String appName,String dockerhub){
 
     pipeline {
 
