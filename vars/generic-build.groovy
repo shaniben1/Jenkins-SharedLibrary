@@ -1,7 +1,11 @@
 #!/usr/bin/env groovy
 library 'shared-lib-int@main'
 
-def call(String telegramToken,String appName,String dockerhub){
+"${repoUrl}"
+
+
+
+def call(String snykToken,String telegramToken,String app_name,String dockerhub){
 
     pipeline {
 
@@ -24,8 +28,8 @@ def call(String telegramToken,String appName,String dockerhub){
 
         //insert credential to environment variable
         //insert to specific environment variable (must to this name: SNYK_TOKEN) my snyk's token
-        environment{
-            SNYK_TOKEN=credentials('snykToken')
+        environment{                  //change
+            SNYK_TOKEN=credentials('${snykToken}')
         }
 
 
@@ -33,8 +37,8 @@ def call(String telegramToken,String appName,String dockerhub){
             stage('Test') {
                parallel {
                        stage('pytest'){
-                            steps{
-                            withCredentials([file(credentialsId: 'telegramToken', variable: 'TOKEN_FILE')]) {
+                            steps{                                        //change
+                                withCredentials([file(credentialsId: '${telegramToken}', variable: 'TOKEN_FILE')]) {
                                 sh "cp ${TOKEN_FILE} ./.telegramToken"
                                 sh 'pip3 install --no-cache-dir -r requirements.txt'
                                 sh 'python3 -m pytest --junitxml results.xml tests/*.py'
@@ -57,8 +61,8 @@ def call(String telegramToken,String appName,String dockerhub){
 
 
             stage('Build Bot app') {                            
-                 steps {                                        //change
-                      sh "docker build -t shaniben/shani-repo:${appName}-${env.BUILD_NUMBER} . "
+                 steps {                                        //change//maybe need to add "?
+                      sh "docker build -t shaniben/shani-repo:${app_name}-${env.BUILD_NUMBER} . "
                        }
                 }
 
@@ -71,9 +75,9 @@ def call(String telegramToken,String appName,String dockerhub){
 
             stage('push image to rep') {                              //change
                 steps {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'pass', usernameVariable: 'user')]){
+                    withCredentials([usernamePassword(credentialsId: '${dockerhub}', passwordVariable: 'pass', usernameVariable: 'user')]){
                         sh "docker login --username $user --password $pass"
-                                                                //change
+                                                                //change//maybe need to add "?
                         sh "docker push shaniben/shani-repo:${appName}-${env.BUILD_NUMBER}"
                         }//close Credentials
                       }//close steps
@@ -82,7 +86,7 @@ def call(String telegramToken,String appName,String dockerhub){
 
     }//close stages
           post{
-                always{                                    //change
+                always{                                    //change//maybe need to add "?
                     sh "docker rmi shaniben/shani-repo:${appName}-${env.BUILD_NUMBER}"
                       }
               }
