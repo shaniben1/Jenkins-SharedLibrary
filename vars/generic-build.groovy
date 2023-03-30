@@ -1,14 +1,14 @@
 #!/usr/bin/env groovy
 
 
-//"${repoUrl}"
+
 
 
 
 def call(String snykToken,String telegramToken,String app_name,String dockerhub){
 
     pipeline {
-
+//"${repoUrl}"
         options {
             buildDiscarder(logRotator(daysToKeepStr: '10', numToKeepStr: '10'))
             disableConcurrentBuilds()
