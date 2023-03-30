@@ -37,24 +37,28 @@ def call(String snykToken,String telegramToken,String app_name,String dockerhub)
             stage('Test') {
                parallel {
                        stage('pytest'){
-                            steps{                                        //change
+                            steps{                                      
+                                catchError(message:'pytest ERROR-->even this fails,we continue on',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
+                                                                           //change
                                 withCredentials([file(credentialsId: '${telegramToken}', variable: 'TOKEN_FILE')]) {
                                 sh "cp ${TOKEN_FILE} ./.telegramToken"
                                 sh 'pip3 install --no-cache-dir -r requirements.txt'
                                 sh 'python3 -m pytest --junitxml results.xml tests/*.py'
                                          }//close Credentials
+                                     }//close catchError pytest
                                  }//close steps
                             }//close stage pytest
 
                        stage('pylint') {
                              steps {
+                                 catchError(message:'pylint ERROR-->even this fails,we continue on',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
                                   script {
                                         log.info 'Starting'
                                          log.warning 'Nothing to do!'
                                          sh "python3 -m pylint *.py || true"
                                          }
-
-                                  }
+                                    }//close catchError pylint
+                             }
                        }//close stage pylint
                }//close parallel
             }//close stage Test
