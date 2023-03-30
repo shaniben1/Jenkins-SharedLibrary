@@ -29,7 +29,7 @@ def call(String snykToken,String telegramToken,String app_name,String dockerhub)
         //insert credential to environment variable
         //insert to specific environment variable (must to this name: SNYK_TOKEN) my snyk's token
         environment{                  //change
-            SNYK_TOKEN=credentials('${snykToken}')
+            SNYK_TOKEN=credentials("${snykToken}")
         }
 
 
@@ -40,7 +40,7 @@ def call(String snykToken,String telegramToken,String app_name,String dockerhub)
                             steps{                                      
                                 catchError(message:'pytest ERROR-->even this fails,we continue on',buildResult:'UNSTABLE',stageResult:'UNSTABLE'){
                                                                            //change
-                                withCredentials([file(credentialsId: '${telegramToken}', variable: 'TOKEN_FILE')]) {
+                                withCredentials([file(credentialsId: "${telegramToken}", variable: 'TOKEN_FILE')]) {
                                 sh "cp ${TOKEN_FILE} ./.telegramToken"
                                 sh 'pip3 install --no-cache-dir -r requirements.txt'
                                 sh 'python3 -m pytest --junitxml results.xml tests/*.py'
@@ -79,7 +79,7 @@ def call(String snykToken,String telegramToken,String app_name,String dockerhub)
 
             stage('push image to rep') {                              //change
                 steps {
-                    withCredentials([usernamePassword(credentialsId: '${dockerhub}', passwordVariable: 'pass', usernameVariable: 'user')]){
+                    withCredentials([usernamePassword(credentialsId: "${dockerhub}", passwordVariable: 'pass', usernameVariable: 'user')]){
                         sh "docker login --username $user --password $pass"
                                                                 //change//maybe need to add "?
                         sh "docker push shaniben/shani-repo:${appName}-${env.BUILD_NUMBER}"
